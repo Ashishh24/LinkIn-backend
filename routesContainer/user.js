@@ -43,7 +43,7 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
         const data = [...dataa1, ...dataa2];
         
         if(data.length === 0){
-            re.send("You don't have any connections :(")
+            res.send("You don't have any connections :(")
         }
 
         res.json({
