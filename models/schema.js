@@ -63,9 +63,9 @@ const schema = mongoose.Schema({
         min: 1000000000,
         max: 10000000000,
     },
-    proilePhoto: {
+    profilePhoto: {
         type: String,
-        default: "https://toppng.com/uploads/preview/instagram-default-profile-picture-11562973083brycehrmyv.png",
+        default: "https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg",
     },
     about: {
         type: String,

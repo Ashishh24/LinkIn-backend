@@ -18,7 +18,7 @@ authRouter.post("/signup", async (req, res) => {
         await user.save();
         res.send("User added successfully!!");
     } catch(err) {
-        res.status(402).send("User not added: " + err.message);
+        res.status(406).send("Credentials not acceptable!!");
     }
 });
 
@@ -28,22 +28,33 @@ authRouter.post("/login", async (req, res) => {
         const isUser = await User.findOne({email: email});
 
         if(!isUser){
-            throw new Error("Invalid email!!")
+            // throw new Error("Invalid email!!");
+            res.status(404).send("ERROR: Invalid email!!");
         }
         const isPasswordValid = await isUser.validatePassword(password);
         if(!isPasswordValid){
-            throw new Error("Invalid password!!");
+            res.status(403).send("ERROR: Invalid password!!");
         }
         else{
             var token = isUser.getJWT();
             res.cookie("token", token, {
                 expires: new Date(Date.now() + 8 * 3600000),
             });
-            res.send("Login Successful!!!!😊");
+            res.send(isUser);
+            // res.json({
+            //     _id: isUser._id,
+            //     firstName: isUser.firstName,
+            //     lastName: isUser.lastName,
+            //     email: isUser.email,
+            //     proilePhoto: isUser.proilePhoto,
+            //     phone: isUser.phone,
+            //     about: isUser.about,
+            //     skills: isUser.skills
+            // });
         }
     }
     catch(err) {
-        res.status(402).send("ERROR: " + err.message);
+        res.send("ERROR: " + err.message);
     }
 });
 

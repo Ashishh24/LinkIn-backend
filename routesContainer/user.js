@@ -4,7 +4,7 @@ const Connection = require("../models/connection");
 const User = require("../models/schema")
 const userRouter = express.Router();
 
-const userData= "firstName lastName proilePhoto";
+const userData= "firstName lastName profilePhoto";
 
 userRouter.get("/user/connectionRequest", userAuth, async (req, res) => {
     try{
@@ -15,7 +15,9 @@ userRouter.get("/user/connectionRequest", userAuth, async (req, res) => {
             status: "connect",
         }).populate("fromUserID", userData);
         
-        if(connectionRequests.length === 0){
+        const data = connectionRequests.map((row) => row.fromUserID);
+        
+        if(data.length === 0){
             res.send("You don't have any pending requests!!")
         }
 
@@ -36,14 +38,16 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
 
         const connections1 = await Connection.find({toUserID: loggedInUser, status: "accept"}).populate("fromUserID", userData);
         const connections2 = await Connection.find({fromUserID: loggedInUser, status: "accept"}).populate("toUserID", userData);
-                
+        console.log(connections1);
+        
         const dataa1 = connections1.map((row) => row.fromUserID);
         const dataa2 = connections2.map((row) => row.toUserID);
         
         const data = [...dataa1, ...dataa2];
+        console.log(data);
         
         if(data.length === 0){
-            re.send("You don't have any connections :(")
+            res.send("You don't have any connections :(")
         }
 
         res.json({
@@ -88,7 +92,6 @@ userRouter.get("/user/feed", userAuth, async (req, res) => {
         })
         .select(userData)         // select only fields from User Obj
         .skip(skip).limit(limit); // set skip and limit
-
         res.json({data: feedUsers});
     }
     catch (err) {

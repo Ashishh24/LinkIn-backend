@@ -11,12 +11,12 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
     try{
         user = req.user;
         if(!user){
-            throw new Error("Invalid Userr!!")
+            res.status(404).send("Invalid Userr!!");
         }
         res.send(user);
     }
     catch(err) {
-        res.status(402).send("ERROR: " + err.message);
+        res.send("ERROR: " + err.message);
     }
 })
 
@@ -44,11 +44,11 @@ profileRouter.patch("/profile/changePassword", userAuth, async (req, res) => {
         
         const oldP = await loggedInUser.validatePassword(oldPassword);
         if(!oldP){
-            throw new Error("Old password is not correct!")
+            res.status(401).send("Old password is not correct");
         }
         newP = validator.isStrongPassword(newPassword);
         if(!newP){
-            throw new Error("New Password is not strong enough!!")
+            res.status(406).send("New Password is not strong enough!!");
         }
         const newPasswordHash = await bcrypt.hash(newPassword, 10);
 
@@ -57,7 +57,7 @@ profileRouter.patch("/profile/changePassword", userAuth, async (req, res) => {
         res.send("Password Updated Successfully!!")
     }
     catch(err) {
-        res.status(400).send("PASSWORD UPDATE FAILED: " + err.message);
+        res.send("PASSWORD UPDATE FAILED: " + err.message);
     }
 })
 
