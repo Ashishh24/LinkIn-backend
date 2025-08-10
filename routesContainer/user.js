@@ -38,13 +38,13 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
 
         const connections1 = await Connection.find({toUserID: loggedInUser, status: "accept"}).populate("fromUserID", userData);
         const connections2 = await Connection.find({fromUserID: loggedInUser, status: "accept"}).populate("toUserID", userData);
-        console.log(connections1);
+        // console.log(connections1);
         
         const dataa1 = connections1.map((row) => row.fromUserID);
         const dataa2 = connections2.map((row) => row.toUserID);
         
         const data = [...dataa1, ...dataa2];
-        console.log(data);
+        // console.log(data);
         
         if(data.length === 0){
             res.send("You don't have any connections :(")
