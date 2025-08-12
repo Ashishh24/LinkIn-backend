@@ -28,7 +28,6 @@ authRouter.post("/login", async (req, res) => {
         const isUser = await User.findOne({email: email});
 
         if(!isUser){
-            // throw new Error("Invalid email!!");
             res.status(404).send("ERROR: Invalid email!!");
         }
         const isPasswordValid = await isUser.validatePassword(password);
@@ -41,16 +40,6 @@ authRouter.post("/login", async (req, res) => {
                 expires: new Date(Date.now() + 8 * 3600000),
             });
             res.send(isUser);
-            // res.json({
-            //     _id: isUser._id,
-            //     firstName: isUser.firstName,
-            //     lastName: isUser.lastName,
-            //     email: isUser.email,
-            //     proilePhoto: isUser.proilePhoto,
-            //     phone: isUser.phone,
-            //     about: isUser.about,
-            //     skills: isUser.skills
-            // });
         }
     }
     catch(err) {

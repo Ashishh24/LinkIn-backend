@@ -61,17 +61,17 @@ profileRouter.patch("/profile/changePassword", userAuth, async (req, res) => {
     }
 })
 
-// profileRouter.get("/profile/view/:userID", userAuth, async (req, res) => {
-//     try{
-//         user = req.params.userID;
-//         if(!user){
-//             throw new Error("Invalid Userr!!")
-//         }
-//         res.send(user);
-//     }
-//     catch(err) {
-//         res.status(402).send("ERROR: " + err.message);
-//     }
-// })
+profileRouter.get("/profile/view/:userID", async (req, res) => {
+    try{
+        user = req.params.userID;
+        if(!user){
+            throw new Error("Invalid Userr!!")
+        }
+        res.send(user);
+    }
+    catch(err) {
+        res.status(402).send("ERROR: " + err.message);
+    }
+})
 
 module.exports = profileRouter;

@@ -26,12 +26,10 @@ const schema = mongoose.Schema({
     },
     dob: {
         type: Date,
-        // required: true,
         max: [get18YearsAgoDate(), 'User must be at least 18 years old.']
     },
     gender: {
         type: String,
-        // required: true,
         enum: ["Male", "Female"]
     },
     email: {
@@ -59,7 +57,6 @@ const schema = mongoose.Schema({
     },
     phone: {
         type: Number,
-        // required: true,
         min: 1000000000,
         max: 10000000000,
     },
