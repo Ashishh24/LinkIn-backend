@@ -5,7 +5,7 @@ const cors = require("cors");
 
 const app = express();
 
-const User = require("./models/schema");
+const User = require("./src/models/schema");
 
 app.use(cors({
     origin:"http://localhost:1234",
@@ -14,10 +14,10 @@ app.use(cors({
 app.use(express.json()); // a middleware that converts all json to js object
 app.use(cookieParser()); //Get cookie from web
 
-const authRouter = require("./routesContainer/auth");
-const profileRouter = require("./routesContainer/profile");
-const requestRouter = require("./routesContainer/request");
-const userRouter = require("./routesContainer/user");
+const authRouter = require("./src/routesContainer/auth");
+const profileRouter = require("./src/routesContainer/profile");
+const requestRouter = require("./src/routesContainer/request");
+const userRouter = require("./src/routesContainer/user");
 
 app.use("/", authRouter);
 app.use("/", profileRouter);
