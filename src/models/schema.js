@@ -56,10 +56,12 @@ const schema = mongoose.Schema({
         }
     },
     phone: {
-        type: Number,
-        min: 1000000000,
-        max: 10000000000,
-    },
+        type: String,
+        validator: function(v) {
+            return /^\d{10}$/.test(v); // exactly 10 digits
+          },
+          message: "Invalid Indian phone number format"
+        },
     profilePhoto: {
         type: String,
         default: "https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg",
