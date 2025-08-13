@@ -1,4 +1,4 @@
-.const express = require("express");
+const express = require("express");
 const {userAuth} = require("../middlewares/user");
 const {validateEditData} = require("../utils/validation")
 const User = require("../models/schema");
