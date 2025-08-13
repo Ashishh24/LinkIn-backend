@@ -1,4 +1,4 @@
-const express = require("express");
+.const express = require("express");
 const {userAuth} = require("../middlewares/user");
 const {validateEditData} = require("../utils/validation")
 const User = require("../models/schema");
@@ -16,7 +16,7 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
         res.send(user);
     }
     catch(err) {
-        res.send("ERROR: " + err.message);
+        res.status(err.statusCode).json({message: err.message});
     }
 })
 
@@ -33,7 +33,7 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
         res.send("Update succesful!!")
     }
     catch(err) {
-        res.status(400).send("user update failed: " + err.message);
+        res.status(err.statusCode).json({message: err.message});
     }
 })
 
@@ -57,7 +57,7 @@ profileRouter.patch("/profile/changePassword", userAuth, async (req, res) => {
         res.send("Password Updated Successfully!!")
     }
     catch(err) {
-        res.send("PASSWORD UPDATE FAILED: " + err.message);
+        res.json({message: err.message});
     }
 })
 
@@ -65,12 +65,12 @@ profileRouter.get("/profile/view/:userID", async (req, res) => {
     try{
         user = req.params.userID;
         if(!user){
-            throw new Error("Invalid Userr!!")
+            throw {message: "Invalid Userr!!", errorCode: 402};
         }
         res.send(user);
     }
     catch(err) {
-        res.status(402).send("ERROR: " + err.message);
+        res.status(err.statusCode).json({message: err.message});
     }
 })
 
