@@ -13,8 +13,8 @@ userRouter.get("/user/connectionRequest", userAuth, async (req, res) => {
         const connectionRequests = await Connection.find({
             toUserID: loggedInUser, 
             status: "connect",
-        });
-        // }).populate("fromUserID", userData); // need to test
+        // })
+        }).populate("fromUserID", userData); // need to test
         
         const data = connectionRequests.map((row) => row.fromUserID);
         
@@ -28,7 +28,7 @@ userRouter.get("/user/connectionRequest", userAuth, async (req, res) => {
         });
     }
     catch (err) {
-        res.status(400).send("ERROR: " + err.messsage);
+        res.status(err.statusCode).json({message: err.message});
     }
 
 })
@@ -55,7 +55,7 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
         });
     }
     catch (err) {
-        res.status(400).send("ERROR: " + err.message);
+        res.status(err.statusCode).json({message: err.message});
     }
 
 })
@@ -94,7 +94,7 @@ userRouter.get("/user/feed", userAuth, async (req, res) => {
         res.json({data: feedUsers});
     }
     catch (err) {
-        res.status(400).send("ERROR: " + err.message);
+        res.status(err.statusCode).json({message: err.message});
     }
 })
 
