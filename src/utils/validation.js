@@ -4,13 +4,13 @@ const validateSignupData = (req) => {
     const { firstName, lastName, dob, gender, email, password, phone } = req.body;
 
     if(!firstName && !lastName) {
-        throw new Error("Firtname or Lastname and must")
+        throw {message: "Firtname or Lastname and must", errorCode: 406);
     }
     else if(!validator.isEmail(email)){
-        throw new Error("Email is not appropriate!")
+        throw {message: "Email is not appropriate!", errorCode: 406);
     }
     else if(!validator.isStrongPassword(password)){
-        throw new Error("Password is not strong!!")
+        throw {message: "Password is not strong!!", errorCode: 406);
     }
 }
 
