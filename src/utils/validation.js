@@ -18,7 +18,13 @@ const validateEditData = (req) => {
     const data = req.body;
     fieldAllowed = ["firstName", "lastName", "gender", "phone", "profilePhoto", "about", "skills"]
     isEditAllowed = Object.keys(data).every(k => fieldAllowed.includes(k));
-    console.log(isEditAllowed);
+    if (!isEditAllowed) {
+        throw {message: "Some fields are not allowed to be updated", statusCode: 406};
+    }
+
+    if (data.phone && !/^(\+91)?[6-9]\d{9}$/.test(data.phone)) {
+        throw {message: "Invalid phone number", statusCode: 406};
+    }
     
     return isEditAllowed;
 }
