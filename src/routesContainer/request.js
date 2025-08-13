@@ -14,22 +14,22 @@ requestRouter.post("/request/send/:status/:userID", userAuth, async (req, res) =
 
         const toUser = await User.findById(toUserID);
         if(!toUser){
-            res.status(404).send("User not found!!!");
+            throw {message: "User not found!!!", statusCode: 404}
         }
 
         const allowed_status = ["connect", "ignore"];
         if(!allowed_status.includes(status)){
-            res.status(403).send("Invalid request!!!");
+            throw {message: "Invalid request!!!", statusCode: 403}
         }
 
         const existingConnectionRequest = await Connection.findOne({ fromUserID, toUserID })
         const existingConnectionRequest2 = await Connection.findOne({ fromUserID: toUserID, toUserID: fromUserID })
 
         if(existingConnectionRequest){
-            res.status(403).send("Connection request already sent!!!");
+            throw {message: "Connection request already sent!!!", statusCode: 403}            
         }
         else if(existingConnectionRequest2){
-            res.status(403).send("Connection request already exist, Please check the request list!!!");
+            throw {message: "Connection request already exist, Please check the request list!!!", statusCode: 403}
         }
         else{
             const connection = new Connection({fromUserID, toUserID, status});
@@ -38,7 +38,7 @@ requestRouter.post("/request/send/:status/:userID", userAuth, async (req, res) =
         }
     }
     catch (err) {
-        res.send("ERROR: " + err.message);
+        res.status(err.statusCode).json({message: err.message});
     }
 });
 
@@ -50,13 +50,13 @@ requestRouter.patch("/request/review/:status/:requestID", userAuth, async (req, 
 
         const allowed_status = ["accept", "reject"];
         if(!allowed_status.includes(status)){
-            res.status(403).send("Invalid request!!!");
+            throw {message: "Invalid request!!!", statusCode: 403}
         }
 
         const currStatus = "connect";
         const existingConnectionRequest = await Connection.findOne({_id: requestID, toUserID: loggedInUser, status: currStatus});
         if(!existingConnectionRequest){
-            res.status(404).send("Request not found!!!");
+            throw {message: "Request not found!!!", statusCode: 404}
         }
 
         await Connection.findByIdAndUpdate( existingConnectionRequest._id, {status:status});
@@ -64,7 +64,7 @@ requestRouter.patch("/request/review/:status/:requestID", userAuth, async (req, 
         res.send("Connection Updated!!");
     }
     catch (err) {
-        res.send("ERROR: " + err.message);
+        res.status(err.statusCode).json({message: err.message});
     }
 });
 
