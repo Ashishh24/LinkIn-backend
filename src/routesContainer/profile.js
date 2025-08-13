@@ -11,7 +11,7 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
     try{
         user = req.user;
         if(!user){
-            res.status(404).send("Invalid Userr!!");
+            throw {message: "Invalid Userr!!", statusCode: 404};
         }
         res.send(user);
     }
@@ -23,7 +23,7 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
 profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
     try {
         if(!validateEditData(req)){
-            throw new Error("Update Request is not valid!!")
+            throw {message: "Update Request is not valid!!", statusCode: 405};
         }
         const loggedInUser = req.user;
         Object.keys(req.body).forEach((k) => {
@@ -44,11 +44,11 @@ profileRouter.patch("/profile/changePassword", userAuth, async (req, res) => {
         
         const oldP = await loggedInUser.validatePassword(oldPassword);
         if(!oldP){
-            res.status(401).send("Old password is not correct");
+            throw {message: "Old password is not correct", statusCode: 401};
         }
         newP = validator.isStrongPassword(newPassword);
         if(!newP){
-            res.status(406).send("New Password is not strong enough!!");
+            throw {message: "New Password is not strong enough!!", statusCode: 406};
         }
         const newPasswordHash = await bcrypt.hash(newPassword, 10);
 
@@ -57,7 +57,7 @@ profileRouter.patch("/profile/changePassword", userAuth, async (req, res) => {
         res.send("Password Updated Successfully!!")
     }
     catch(err) {
-        res.json({message: err.message});
+        res.status(err.statusCode).json({message: err.message});
     }
 })
 
@@ -65,7 +65,7 @@ profileRouter.get("/profile/view/:userID", async (req, res) => {
     try{
         user = req.params.userID;
         if(!user){
-            throw {message: "Invalid Userr!!", errorCode: 402};
+            throw {message: "Invalid Userr!!", statusCode: 404};
         }
         res.send(user);
     }
