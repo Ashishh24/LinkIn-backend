@@ -18,7 +18,7 @@ authRouter.post("/signup", async (req, res) => {
         await user.save();
         res.send("User added successfully!!");
     } catch(err) {
-        res.status(406).send("Credentials not acceptable!!");
+        res.status(errorCode).json({message: err.message});
     }
 });
 
