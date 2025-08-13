@@ -28,11 +28,11 @@ authRouter.post("/login", async (req, res) => {
         const isUser = await User.findOne({email: email});
 
         if(!isUser){
-            res.status(404).send("ERROR: Invalid email!!");
+            throw {message: "Invalid email!!", statusCode:404};
         }
         const isPasswordValid = await isUser.validatePassword(password);
         if(!isPasswordValid){
-            res.status(403).send("ERROR: Invalid password!!");
+            throw {message: "Invalid password!!", statusCode: 403};
         }
         else{
             var token = isUser.getJWT();
@@ -43,7 +43,7 @@ authRouter.post("/login", async (req, res) => {
         }
     }
     catch(err) {
-        res.send("ERROR: " + err.message);
+        res.status(err.statusCode).json({message: err.message});
     }
 });
 
