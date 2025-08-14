@@ -4,8 +4,11 @@ const {validateEditData} = require("../utils/validation")
 const User = require("../models/schema");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
+const Connection = require("../models/connection");
 
 const profileRouter = express.Router();
+
+const userData= "firstName lastName profilePhoto email phone about skills";
 
 profileRouter.get("/profile/view", userAuth, async (req, res) => {
     try{
@@ -72,6 +75,32 @@ profileRouter.get("/profile/view/:userID", async (req, res) => {
     catch(err) {
         res.status(err.statusCode).json({message: err.message});
     }
+})
+
+profileRouter.get("/profile/connectionRequestSent", userAuth, async (req, res) => {
+    try{
+        const loggedInUser = req.user;
+
+        const connectionRequestsSent = await Connection.find({
+            fromUserID: loggedInUser._id, 
+            status: "connect",
+        }).populate("toUserID", userData);
+        
+        const data = connectionRequestsSent.map((row) => row.toUserID);
+        
+        if(data.length === 0){
+            res.send("You haven't any requests sent!!");
+        }
+
+        res.json({
+            message: "Fetched all pending connection requests!!",
+            data: connectionRequestsSent
+        });
+    }
+    catch (err) {
+        res.status(err.statusCode || 400).json({message: err.message});
+    }
+
 })
 
 module.exports = profileRouter;

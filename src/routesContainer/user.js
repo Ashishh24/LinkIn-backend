@@ -13,8 +13,7 @@ userRouter.get("/user/connectionRequest", userAuth, async (req, res) => {
         const connectionRequests = await Connection.find({
             toUserID: loggedInUser, 
             status: "connect",
-        // })
-        }).populate("fromUserID", userData); // need to test
+        }).populate("fromUserID", userData);
         
         const data = connectionRequests.map((row) => row.fromUserID);
         

@@ -4,13 +4,16 @@ const validateSignupData = (req) => {
     const { firstName, lastName, dob, gender, email, password, phone } = req.body;
 
     if(!firstName && !lastName) {
-        throw {message: "Firtname or Lastname and must", errorCode: 406};
+        throw {message: "Firtname or Lastname and must", statusCode: 406};
     }
     else if(!validator.isEmail(email)){
-        throw {message: "Email is not appropriate!", errorCode: 406};
+        throw {message: "Email is not appropriate!", statusCode: 406};
+    }
+    else if(!password || password.length < 8) {
+        throw {message: "Password should atleast be of 8 characters", statusCode: 406};
     }
     else if(!validator.isStrongPassword(password)){
-        throw {message: "Password is not strong!!", errorCode: 406};
+        throw {message: "Password is not strong!!", statusCode: 406};
     }
 }
 
