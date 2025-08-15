@@ -55,6 +55,10 @@ const schema = mongoose.Schema({
             );
         }
     },
+    verified: {
+        type: Boolean,
+        default: false,
+    },
     phone: {
         type: String,
         validator: function(v) {

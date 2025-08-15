@@ -12,7 +12,7 @@ const userData= "firstName lastName profilePhoto email phone about skills";
 
 profileRouter.get("/profile/view", userAuth, async (req, res) => {
     try{
-        user = req.user;
+        const user = req.user;
         if(!user){
             throw {message: "Invalid Userr!!", statusCode: 404};
         }
@@ -66,7 +66,7 @@ profileRouter.patch("/profile/changePassword", userAuth, async (req, res) => {
 
 profileRouter.get("/profile/view/:userID", async (req, res) => {
     try{
-        user = req.params.userID;
+        const user = req.params.userID;
         if(!user){
             throw {message: "Invalid Userr!!", statusCode: 404};
         }
@@ -101,6 +101,17 @@ profileRouter.get("/profile/connectionRequestSent", userAuth, async (req, res) =
         res.status(err.statusCode || 400).json({message: err.message});
     }
 
+})
+
+profileRouter.delete("/profile/delete", userAuth, async (req, res) => {
+    try {
+        const loggedInUser = req.user;
+        const dlt = await User.findByIdAndDelete(loggedInUser._id)
+        res.send("User Deleted Successfully!!")
+    }
+    catch (err) {
+        res.status(err.statusCode || 400).json({message: err.message});
+    }
 })
 
 module.exports = profileRouter;

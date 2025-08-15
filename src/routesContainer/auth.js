@@ -1,7 +1,8 @@
 const express = require("express");
 const User = require("../models/schema");
-const {validateSignupData} = require("../utils/validation")
+const { validateSignupData } = require("../utils/validation")
 const bcrypt = require("bcrypt");
+const { verifyOTP, sendOTPForEmailVerification } = require("../utils/otpService")
 
 const authRouter = express.Router();
 
@@ -15,10 +16,55 @@ authRouter.post("/signup", async (req, res) => {
         const user = new User({
             firstName, lastName, email, password: passwordHash
         });
+
         await user.save();
-        res.send("User added successfully!!");
+
+        await sendOTPForEmailVerification(email);
+                
+        res.status(201).json({ message: "User registered. Please verify your email with the OTP sent." });
     } catch(err) {
+        res.status(err.statusCode || 400).json({message: err.message});
+    }
+});
+
+authRouter.post("/send-otp", async(req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await User.findOne({email: email});
+
+        if(!user) {
+            throw {message: "Email not exist", statusCode: 404}
+        }
+
+        if(user.verified === false) {
+            await sendOTPForEmailVerification(email);
+            res.send("OTP sent successfully!");
+        }
+        res.status(200).json({message: "User already verified"});
+    }
+    catch(err) {
         res.status(err.statusCode).json({message: err.message});
+    }
+})
+
+authRouter.post("/verify-otp", async (req, res) => {
+    try {
+        const { email, otp } = req.body;
+
+        if (!email || !otp) {
+            throw {message: "Email and OTP are required", statusCode: 400}
+        }
+
+        const isValid = await verifyOTP(email, otp);
+        if (!isValid) {
+            throw { message: "Invalid OTP", statusCode: 401}
+        }
+
+        await User.findOneAndUpdate({ email }, { verified: true });
+
+        res.json({ message: "Email verified successfully. You can now log in." });
+    } catch (err) {
+        res.status(500).json({ message: "Server error" });
     }
 });
 
@@ -30,6 +76,11 @@ authRouter.post("/login", async (req, res) => {
         if(!isUser){
             throw {message: "Invalid email!!", statusCode:404};
         }
+
+        if (!isUser.verified) {
+            throw { message: "Please verify your email first!!", statusCode: 403 }
+        }
+
         const isPasswordValid = await isUser.validatePassword(password);
         if(!isPasswordValid){
             throw {message: "Invalid password!!", statusCode: 403};
