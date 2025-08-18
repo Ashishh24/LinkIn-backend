@@ -9,18 +9,16 @@ const authRouter = express.Router();
 authRouter.post("/signup", async (req, res) => {
     try {
         validateSignupData(req);
-
         const {firstName, lastName, email, password} = req.body;
-        const passwordHash = await bcrypt.hash(password, 10);
+        const passwordHash = bcrypt.hash(password, process.env.PASS_HASH_SALT);
 
         const user = new User({
             firstName, lastName, email, password: passwordHash
         });
 
         await user.save();
-
         await sendOTPForEmailVerification(email);
-                
+
         res.status(201).json({ message: "User registered. Please verify your email with the OTP sent." });
     } catch(err) {
         res.status(err.statusCode || 400).json({message: err.message});

@@ -83,7 +83,7 @@ const schema = mongoose.Schema({
 
 schema.methods.getJWT = function() {
     const user = this;
-    const jwtToken = jwt.sign({ _id: user._id }, 'Link@in@1804', { expiresIn: '1d' });
+    const jwtToken = jwt.sign({ _id: user._id }, process.env.JWT_KEY, { expiresIn: '1d' });
     return jwtToken;
 }
 

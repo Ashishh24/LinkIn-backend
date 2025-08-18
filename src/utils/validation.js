@@ -28,8 +28,17 @@ const validateEditData = (req) => {
     if (data.phone && !/^(\+91)?[6-9]\d{9}$/.test(data.phone)) {
         throw {message: "Invalid phone number", statusCode: 406};
     }
-    
     return isEditAllowed;
 }
 
-module.exports = {validateSignupData, validateEditData};
+const validatePassword = (req) => {
+    const {newPassword} = req.body;
+    if(!password || password.length < 8) {
+        throw {message: "Password should atleast be of 8 characters", statusCode: 406};
+    }
+    else if(!validator.isStrongPassword(password)){
+        throw {message: "Password is not strong!!", statusCode: 406};
+    }
+}
+
+module.exports = {validateSignupData, validateEditData, validatePassword};

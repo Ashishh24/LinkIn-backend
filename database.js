@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-require('dotenv').config();
 
 const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
@@ -7,7 +6,7 @@ const dbConfig = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
 }
-const connectDB = async () => {
+const connectDB = async () => { 
   await mongoose.connect(`mongodb+srv://${dbConfig.user}:${dbConfig.password}@cluster0.ymgrbgi.mongodb.net/${dbConfig.database}?retryWrites=true&w=majority`);
 };
 

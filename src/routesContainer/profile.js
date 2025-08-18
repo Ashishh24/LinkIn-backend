@@ -1,6 +1,6 @@
 const express = require("express");
 const {userAuth} = require("../middlewares/user");
-const {validateEditData} = require("../utils/validation")
+const { validateEditData, validatePassword } = require("../utils/validation")
 const User = require("../models/schema");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
@@ -49,11 +49,10 @@ profileRouter.patch("/profile/changePassword", userAuth, async (req, res) => {
         if(!oldP){
             throw {message: "Old password is not correct", statusCode: 401};
         }
-        newP = validator.isStrongPassword(newPassword);
-        if(!newP){
-            throw {message: "New Password is not strong enough!!", statusCode: 406};
-        }
-        const newPasswordHash = await bcrypt.hash(newPassword, 10);
+
+        validatePassword(newPassword)
+
+        const newPasswordHash = await bcrypt.hash(newPassword, process.env.PASS_HASH_SALT);
 
         await loggedInUser.updateOne({password: newPasswordHash});
 
@@ -66,10 +65,11 @@ profileRouter.patch("/profile/changePassword", userAuth, async (req, res) => {
 
 profileRouter.get("/profile/view/:userID", async (req, res) => {
     try{
-        const user = req.params.userID;
-        if(!user){
+        const userID = req.params.userID;
+        if(!userID){
             throw {message: "Invalid Userr!!", statusCode: 404};
         }
+        const user = await User.findById(userID);
         res.send(user);
     }
     catch(err) {

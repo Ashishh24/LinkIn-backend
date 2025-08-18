@@ -1,6 +1,4 @@
 const express = require("express");
-require('dotenv').config();
-
 const multer = require("multer");
 const AWS = require("aws-sdk");
 const fs = require("fs");
