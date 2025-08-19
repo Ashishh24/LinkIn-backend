@@ -8,7 +8,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon src/app.js"
   },
   "dependencies": {
     "aws-sdk": "^2.1692.0",

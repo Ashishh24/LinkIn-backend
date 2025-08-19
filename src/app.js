@@ -7,7 +7,7 @@ const cors = require("cors");
 const { initializeSocket } = require("./utils/socket")
 
 const app = express();
-const User = require("./src/models/schema");
+const User = require("./models/schema");
 
 app.use(cors({
     origin:"*",
@@ -16,11 +16,11 @@ app.use(cors({
 app.use(express.json()); // a middleware that converts all json to js object
 app.use(cookieParser()); // Get cookie from web
 
-const authRouter = require("./src/routesContainer/auth");
-const profileRouter = require("./src/routesContainer/profile");
-const requestRouter = require("./src/routesContainer/request");
-const userRouter = require("./src/routesContainer/user");
-const uploadRouter = require("./src/routesContainer/upload");
+const authRouter = require("./routesContainer/auth");
+const profileRouter = require("./routesContainer/profile");
+const requestRouter = require("./routesContainer/request");
+const userRouter = require("./routesContainer/user");
+const uploadRouter = require("./routesContainer/upload");
 
 app.use("/", authRouter);
 app.use("/", profileRouter);
