@@ -88,7 +88,7 @@ authRouter.post("/login", async (req, res) => {
             res.cookie("token", token, {
                 expires: new Date(Date.now() + 8 * 3600000),
             });
-            res.send(isUser);
+            res.json({token, user: isUser});
         }
     }
     catch(err) {
