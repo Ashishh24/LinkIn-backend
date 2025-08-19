@@ -10,7 +10,7 @@ const app = express();
 const User = require("./src/models/schema");
 
 app.use(cors({
-    origin:"link-inn.vercel.app",
+    origin:"https://link-inn.vercel.app",
     credentials: true
 }));
 app.use(express.json()); // a middleware that converts all json to js object
