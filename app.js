@@ -1,16 +1,16 @@
 require('dotenv').config();
 const http = require("http");
 const express = require("express");
-const connectDB = require("./database");
+const connectDB = require("../database");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const { initializeSocket } = require("./src/utils/socket")
+const { initializeSocket } = require("./utils/socket")
 
 const app = express();
 const User = require("./src/models/schema");
 
 app.use(cors({
-    origin:"http://localhost:1234",
+    origin:"*",
     credentials: true
 }));
 app.use(express.json()); // a middleware that converts all json to js object
