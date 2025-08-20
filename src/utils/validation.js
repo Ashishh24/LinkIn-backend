@@ -25,7 +25,7 @@ const validateEditData = (req) => {
         throw {message: "Some fields are not allowed to be updated", statusCode: 406};
     }
 
-    if (data.phone && !/^(\+91)?[6-9]\d{9}$/.test(data.phone)) {
+    if (data.phone && data.phone.trim() !== "" && !/^(\+91)?[6-9]\d{9}$/.test(data.phone)) {
         throw {message: "Invalid phone number", statusCode: 406};
     }
     return isEditAllowed;

@@ -14,10 +14,8 @@ userRouter.get("/user/connectionRequest", userAuth, async (req, res) => {
             toUserID: loggedInUser, 
             status: "connect",
         }).populate("fromUserID", userData);
-        
-        const data = connectionRequests.map((row) => row.fromUserID);
-        
-        if(data.length === 0){
+
+        if(connectionRequests.length === 0){
             res.send("You don't have any pending requests!!")
         }
 
@@ -27,7 +25,7 @@ userRouter.get("/user/connectionRequest", userAuth, async (req, res) => {
         });
     }
     catch (err) {
-        res.status(err.statusCode).json({message: err.message});
+        res.status(err.statusCode || 400).json({message: err.message});
     }
 
 })
@@ -47,14 +45,15 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
         if(data.length === 0){
             res.send("You don't have any connections :(")
         }
-
-        res.json({
-            message: "Fetched all connections!!",
-            data: data
-        });
+        else {
+            res.json({
+                message: "Fetched all connections!!",
+                data: data
+            });
+        }
     }
     catch (err) {
-        res.status(err.statusCode).json({message: err.message});
+        res.status(err.statusCode || 400).json({message: err.message});
     }
 
 })
@@ -93,7 +92,7 @@ userRouter.get("/user/feed", userAuth, async (req, res) => {
         res.json({data: feedUsers});
     }
     catch (err) {
-        res.status(err.statusCode).json({message: err.message});
+        res.status(err.statusCode || 400).json({message: err.message});
     }
 })
 

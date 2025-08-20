@@ -10,7 +10,8 @@ const app = express();
 const User = require("./src/models/schema");
 
 app.use(cors({
-    origin:"https://link-inn.vercel.app",
+    origin:"http://localhost:1234",
+    methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
     credentials: true
 }));
 app.use(express.json()); // a middleware that converts all json to js object
@@ -33,7 +34,7 @@ initializeSocket(server);
 
 connectDB().then(() => {
     console.log("DB connected :)");
-    server.listen(process.env.PORT, () => {
+    server.listen(parseInt(process.env.PORT), () => {
         console.log("server test connected");
     });
 }).catch((err) => {

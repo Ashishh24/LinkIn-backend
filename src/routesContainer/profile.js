@@ -19,7 +19,7 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
         res.send(user);
     }
     catch(err) {
-        res.status(err.statusCode).json({message: err.message});
+        res.status(err.statusCode || 400).json({message: err.message});
     }
 })
 
@@ -36,7 +36,7 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
         res.send("Update succesful!!")
     }
     catch(err) {
-        res.status(err.statusCode).json({message: err.message});
+        res.status(err.statusCode || 400).json({message: err.message});
     }
 })
 
@@ -59,7 +59,7 @@ profileRouter.patch("/profile/changePassword", userAuth, async (req, res) => {
         res.send("Password Updated Successfully!!")
     }
     catch(err) {
-        res.status(err.statusCode).json({message: err.message});
+        res.status(err.statusCode || 400).json({message: err.message});
     }
 })
 
@@ -73,7 +73,7 @@ profileRouter.get("/profile/view/:userID", async (req, res) => {
         res.send(user);
     }
     catch(err) {
-        res.status(err.statusCode).json({message: err.message});
+        res.status(err.statusCode || 400).json({message: err.message});
     }
 })
 
@@ -85,17 +85,16 @@ profileRouter.get("/profile/connectionRequestSent", userAuth, async (req, res) =
             fromUserID: loggedInUser._id, 
             status: "connect",
         }).populate("toUserID", userData);
-        
-        const data = connectionRequestsSent.map((row) => row.toUserID);
-        
-        if(data.length === 0){
+                
+        if(connectionRequestsSent.length === 0){
             res.send("You haven't any requests sent!!");
         }
-
-        res.json({
-            message: "Fetched all pending connection requests!!",
-            data: connectionRequestsSent
-        });
+        else{
+            res.json({
+                message: "Fetched all pending connection requests!!",
+                data: connectionRequestsSent
+            });
+        }
     }
     catch (err) {
         res.status(err.statusCode || 400).json({message: err.message});
@@ -106,7 +105,10 @@ profileRouter.get("/profile/connectionRequestSent", userAuth, async (req, res) =
 profileRouter.delete("/profile/delete", userAuth, async (req, res) => {
     try {
         const loggedInUser = req.user;
-        const dlt = await User.findByIdAndDelete(loggedInUser._id)
+        console.log("userrrrrrrrrrrr",loggedInUser);
+        
+        const dlt = await User.findByIdAndDelete(loggedInUser._id);
+        
         res.send("User Deleted Successfully!!")
     }
     catch (err) {

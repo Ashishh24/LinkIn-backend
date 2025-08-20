@@ -38,13 +38,15 @@ requestRouter.post("/request/send/:status/:userID", userAuth, async (req, res) =
         }
     }
     catch (err) {
-        res.status(err.statusCode).json({message: err.message});
+        res.status(err.statusCode || 400).json({message: err.message});
     }
 });
 
 requestRouter.patch("/request/review/:status/:requestID", userAuth, async (req, res) => {
     try{
         const loggedInUser = req.user._id;
+        console.log("aaaaaaaa");
+        
         const status = req.params.status;
         const requestID = req.params.requestID;
 
@@ -64,7 +66,7 @@ requestRouter.patch("/request/review/:status/:requestID", userAuth, async (req, 
         res.send("Connection Updated!!");
     }
     catch (err) {
-        res.status(err.statusCode).json({message: err.message});
+        res.status(err.statusCode || 400).json({message: err.message});
     }
 });
 

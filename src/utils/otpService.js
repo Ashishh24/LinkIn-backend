@@ -20,15 +20,18 @@ async function sendOTPForEmailVerification(email) {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
     // Store in DB (5 min expiry)
-    await OTP.create({
-        email,
-        otp,
-        expiresAt: Date.now() + 5 * 60 * 1000
-    });
+    await OTP.findOneAndUpdate(
+        { email }, // match by email
+        {
+            otp,
+            expiresAt: Date.now() + 5 * 60 * 1000, // 5 mins
+        },
+        { upsert: true, new: true } // create if not exists, return new doc
+    );
 
     // Send Email
     await transporter.sendMail({
-        from: `"My App" <${process.env.EMAIL_USER}>`,
+        from: `"LinkInn" <${process.env.EMAIL_USER}>`,
         to: email,
         subject: "Email Verification OTP",
         html: `

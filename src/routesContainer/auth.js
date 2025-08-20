@@ -1,6 +1,6 @@
 const express = require("express");
 const User = require("../models/schema");
-const { validateSignupData } = require("../utils/validation")
+const { validateSignupData, validatePassword } = require("../utils/validation")
 const bcrypt = require("bcrypt");
 const { verifyOTP, sendOTPForEmailVerification } = require("../utils/otpService")
 
@@ -10,7 +10,8 @@ authRouter.post("/signup", async (req, res) => {
     try {
         validateSignupData(req);
         const {firstName, lastName, email, password} = req.body;
-        const passwordHash = bcrypt.hash(password, process.env.PASS_HASH_SALT);
+        
+        const passwordHash = await bcrypt.hash(password, parseInt(process.env.PASS_HASH_SALT));
 
         const user = new User({
             firstName, lastName, email, password: passwordHash
@@ -36,19 +37,20 @@ authRouter.post("/send-otp", async(req, res) => {
 
         if(user.verified === false) {
             await sendOTPForEmailVerification(email);
-            res.send("OTP sent successfully!");
+            res.json({message: "OTP sent successfully!"});
         }
         res.status(200).json({message: "User already verified"});
     }
     catch(err) {
-        res.status(err.statusCode).json({message: err.message});
+        res.status(err.statusCode || 400).json({message: err.message});
     }
 })
 
 authRouter.post("/verify-otp", async (req, res) => {
     try {
         const { email, otp } = req.body;
-
+        console.log(email, otp);
+        
         if (!email || !otp) {
             throw {message: "Email and OTP are required", statusCode: 400}
         }
@@ -60,9 +62,9 @@ authRouter.post("/verify-otp", async (req, res) => {
 
         await User.findOneAndUpdate({ email }, { verified: true });
 
-        res.json({ message: "Email verified successfully. You can now log in." });
+        res.status(200).json({ message: "Email verified successfully. You can now log in." });
     } catch (err) {
-        res.status(500).json({ message: "Server error" });
+        res.status(err.statusCode || 500).json({ message: err.message });
     }
 });
 
@@ -84,7 +86,9 @@ authRouter.post("/login", async (req, res) => {
             throw {message: "Invalid password!!", statusCode: 403};
         }
         else{
-            var token = isUser.getJWT();
+            const token = isUser.getJWT();
+            console.log("loginnnnnnn", token);
+            
             res.cookie("token", token, {
                 expires: new Date(Date.now() + 8 * 24 * 3600000),
             });
@@ -92,7 +96,7 @@ authRouter.post("/login", async (req, res) => {
         }
     }
     catch(err) {
-        res.status(err.statusCode).json({message: err.message});
+        res.status(err.statusCode || 400).json({message: err.message});
     }
 });
 

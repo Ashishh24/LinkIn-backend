@@ -3,7 +3,7 @@ const socket = require("socket.io");
 const initializeSocket = (server) => {
     const io = socket(server, {
         cors: {
-            origin:"https://link-inn.vercel.app",
+            origin:"*",
         }
     });
 
