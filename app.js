@@ -22,12 +22,14 @@ const profileRouter = require("./src/routesContainer/profile");
 const requestRouter = require("./src/routesContainer/request");
 const userRouter = require("./src/routesContainer/user");
 const uploadRouter = require("./src/routesContainer/upload");
+const messageRouter = require("./src/routesContainer/message");
 
 app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
-app.use("/", uploadRouter)
+app.use("/", uploadRouter);
+app.use("/", messageRouter);
 
 const server = http.createServer(app);
 initializeSocket(server);

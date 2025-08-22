@@ -1,6 +1,6 @@
 const express = require("express");
 const User = require("../models/schema");
-const { validateSignupData, validatePassword } = require("../utils/validation")
+const { validateSignupData } = require("../utils/validation")
 const bcrypt = require("bcrypt");
 const { verifyOTP, sendOTPForEmailVerification } = require("../utils/otpService")
 
@@ -22,7 +22,14 @@ authRouter.post("/signup", async (req, res) => {
 
         res.status(201).json({ message: "User registered. Please verify your email with the OTP sent." });
     } catch(err) {
-        res.status(err.statusCode || 400).json({message: err.message});
+        if (err.name === "ValidationError") {
+            const messages = Object.values(err.errors)
+            .map(e => e.message)
+            .join(" | ");
+
+            return res.status(400).json({ message: messages });
+        }
+        res.status(err.statusCode || 404).json({message: err.message});
     }
 });
 

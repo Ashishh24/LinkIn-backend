@@ -13,15 +13,15 @@ const schema = mongoose.Schema({
     firstName: {
         type: String,
         required: true,
-        minLength: 2,
-        maxLength: 20,
+        minLength: [2, "First name must be at least 2 characters long."],
+        maxLength: 50,
         trim: true,
     },
     lastName: {
         type: String,
         required: true,
-        minLength: 2,
-        maxLength: 20,
+        minLength: [2, "Last name must be at least 2 characters long."],
+        maxLength: 50,
         trim: true,
     },
     dob: {
@@ -35,7 +35,7 @@ const schema = mongoose.Schema({
     email: {
         type: String,
         required: true,
-        unique: true,
+        unique: [true, "Email Already Exist!!"],
         lowercase: true,
         trim: true,
         validate(value) {

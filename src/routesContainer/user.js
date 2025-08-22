@@ -18,11 +18,12 @@ userRouter.get("/user/connectionRequest", userAuth, async (req, res) => {
         if(connectionRequests.length === 0){
             res.send("You don't have any pending requests!!")
         }
-
-        res.json({
-            message: "Fetched all pending connection requests!!",
-            data: connectionRequests
-        });
+        else{
+            res.json({
+                message: "Fetched all pending connection requests!!",
+                data: connectionRequests
+            });
+        }
     }
     catch (err) {
         res.status(err.statusCode || 400).json({message: err.message});

@@ -13,7 +13,7 @@ const validateSignupData = (req) => {
         throw {message: "Password should atleast be of 8 characters", statusCode: 406};
     }
     else if(!validator.isStrongPassword(password)){
-        throw {message: "Password is not strong!!", statusCode: 406};
+        throw {message: "Password must include at least one uppercase letter, one lowercase letter, one number, and one special character.", statusCode: 406};
     }
 }
 
