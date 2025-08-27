@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-var validator = require('validator');
+var validator = require("validator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -9,90 +9,100 @@ function get18YearsAgoDate() {
   return today;
 }
 
-const schema = mongoose.Schema({
+const schema = mongoose.Schema(
+  {
     firstName: {
-        type: String,
-        required: true,
-        minLength: [2, "First name must be at least 2 characters long."],
-        maxLength: 50,
-        trim: true,
+      type: String,
+      required: true,
+      minLength: [2, "First name must be at least 2 characters long."],
+      maxLength: 50,
+      trim: true,
     },
     lastName: {
-        type: String,
-        required: true,
-        minLength: [2, "Last name must be at least 2 characters long."],
-        maxLength: 50,
-        trim: true,
+      type: String,
+      required: true,
+      minLength: [2, "Last name must be at least 2 characters long."],
+      maxLength: 50,
+      trim: true,
     },
     dob: {
-        type: Date,
-        max: [get18YearsAgoDate(), 'User must be at least 18 years old.']
+      type: Date,
+      max: [get18YearsAgoDate(), "User must be at least 18 years old."],
     },
     gender: {
-        type: String,
-        enum: ["Male", "Female"]
+      type: String,
+      enum: ["Male", "Female"],
     },
     email: {
-        type: String,
-        required: true,
-        unique: [true, "Email Already Exist!!"],
-        lowercase: true,
-        trim: true,
-        validate(value) {
-            if(!validator.isEmail(value)){
-                throw new Error("invalid email!!")
-            }
-        },
+      type: String,
+      required: true,
+      unique: [true, "Email Already Exist!!"],
+      lowercase: true,
+      trim: true,
+      validate(value) {
+        if (!validator.isEmail(value)) {
+          throw new Error("invalid email!!");
+        }
+      },
     },
     password: {
-        type: String,
-        required: true,
-        validate(value) {
-            return (
-                validator.isStrongPassword(value, {
-                    minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1
-                })
-            );
-        }
+      type: String,
+      required: true,
+      validate(value) {
+        return validator.isStrongPassword(value, {
+          minLength: 8,
+          minLowercase: 1,
+          minUppercase: 1,
+          minNumbers: 1,
+          minSymbols: 1,
+        });
+      },
     },
     verified: {
-        type: Boolean,
-        default: false,
+      type: Boolean,
+      default: false,
     },
     phone: {
-        type: String,
-        validator: function(v) {
-            return /^\d{10}$/.test(v); // exactly 10 digits
-          },
-          message: "Invalid Indian phone number format"
-        },
+      type: String,
+      validator: function (v) {
+        return /^\d{10}$/.test(v); // exactly 10 digits
+      },
+      message: "Invalid Indian phone number format",
+    },
     profilePhoto: {
-        type: String,
-        default: "https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg",
+      type: String,
+      default:
+        "https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg",
     },
     about: {
-        type: String,
+      type: String,
     },
     skills: {
-        type: [String] // array of strings
+      type: [String], // array of strings
     },
-},
-{
+  },
+  {
     timestamps: true,
-});
+  }
+);
 
-schema.methods.getJWT = function() {
-    const user = this;
-    const jwtToken = jwt.sign({ _id: user._id }, process.env.JWT_KEY, { expiresIn: '1d' });
-    return jwtToken;
-}
+schema.methods.getJWT = function () {
+  const user = this;
+  const jwtToken = jwt.sign({ _id: user._id }, process.env.JWT_KEY, {
+    expiresIn: "1d",
+  });
+  return jwtToken;
+};
 
-schema.methods.validatePassword = async function(passwordByUserInput) {
-    const user = this;
-    const passowrdHash = user.password
-    const isPasswordValid = await bcrypt.compare(passwordByUserInput, passowrdHash);
-    return isPasswordValid;
-}
+schema.methods.validatePassword = async function (passwordByUserInput) {
+  const user = this;
+  const passowrdHash = user.password;
+  const isPasswordValid = await bcrypt.compare(
+    passwordByUserInput,
+    passowrdHash
+  );
+  return isPasswordValid;
+};
 
 const User = mongoose.model("User", schema);
 

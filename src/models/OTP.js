@@ -1,21 +1,24 @@
 const mongoose = require("mongoose");
 
-const OTPSchema = new mongoose.Schema({
+const OTPSchema = new mongoose.Schema(
+  {
     email: {
-        type: String,
-        required: true,
-        lowercase: true,
-        trim: true
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
     },
     otp: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     expiresAt: {
-        type: Date,
-        required: true
-    }
-}, { timestamps: true });
+      type: Date,
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
 
 // TTL index: automatically deletes OTP after expiry
 OTPSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
