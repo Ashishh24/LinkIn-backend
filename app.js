@@ -25,7 +25,6 @@ const requestRouter = require("./src/routesContainer/request");
 const userRouter = require("./src/routesContainer/user");
 const uploadRouter = require("./src/routesContainer/upload");
 const messageRouter = require("./src/routesContainer/message");
-const paymentRouter = require("./src/routesContainer/payment");
 const postRouter = require("./src/routesContainer/post");
 
 app.use("/", authRouter);
@@ -34,7 +33,6 @@ app.use("/", requestRouter);
 app.use("/", userRouter);
 app.use("/", uploadRouter);
 app.use("/", messageRouter);
-app.use("/", paymentRouter);
 app.use("/", postRouter);
 
 const server = http.createServer(app);

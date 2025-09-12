@@ -76,7 +76,10 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
 userRouter.get("/user/posts", userAuth, async (req, res) => {
   try {
     const user = req.user;
-    const posts = await Post.find({ userId: user._id });
+    const posts = await Post.find({ userId: user._id })
+      .populate("userId", userData)
+      .populate("likes", userData)
+      .sort({ createdAt: -1 });
     res.json({ posts });
   } catch (err) {
     res.status(err.statusCode || 400).json({ message: err.message });
