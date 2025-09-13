@@ -1,21 +1,22 @@
 const validator = require("validator");
 
 const validateSignupData = (req) => {
-  const { firstName, lastName, dob, gender, email, password, phone } = req.body;
+  const { firstName, lastName, email, password, phone } = req.body;
 
   if (!firstName && !lastName) {
     throw { message: "Firtname or Lastname and must", statusCode: 406 };
-  } else if (!validator.isEmail(email)) {
+  }
+  if (!validator.isEmail(email)) {
     throw { message: "Email is not appropriate!", statusCode: 406 };
-  } else if (!password || password.length < 8) {
-    throw {
-      message: "Password should atleast be of 8 characters",
-      statusCode: 406,
-    };
-  } else if (!validator.isStrongPassword(password)) {
+  }
+  if (
+    !password ||
+    password.length < 8 ||
+    !validator.isStrongPassword(password)
+  ) {
     throw {
       message:
-        "Password must include at least one uppercase letter, one lowercase letter, one number, and one special character.",
+        "Password must be 8 chars with uppercase, lowercase, number & special char",
       statusCode: 406,
     };
   }
@@ -50,14 +51,14 @@ const validateEditData = (req) => {
   return isEditAllowed;
 };
 
-const validatePassword = (req) => {
-  const { newPassword } = req.body;
-  if (!password || password.length < 8) {
+const validatePassword = (newPassword) => {
+  if (!newPassword || newPassword.length < 8) {
     throw {
-      message: "Password should atleast be of 8 characters",
+      message:
+        "Password must be 8+ chars with uppercase, lowercase, number & special char.",
       statusCode: 406,
     };
-  } else if (!validator.isStrongPassword(password)) {
+  } else if (!validator.isStrongPassword(newPassword)) {
     throw { message: "Password is not strong!!", statusCode: 406 };
   }
 };

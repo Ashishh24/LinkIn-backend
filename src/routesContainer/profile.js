@@ -1,7 +1,7 @@
 const express = require("express");
 const { userAuth } = require("../middlewares/user");
 const { validateEditData, validatePassword } = require("../utils/validation");
-const User = require("../models/schema");
+const User = require("../models/user");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
 const Connection = require("../models/connection");
@@ -43,16 +43,24 @@ profileRouter.patch("/profile/changePassword", userAuth, async (req, res) => {
     const loggedInUser = req.user;
     const { oldPassword, newPassword } = req.body;
 
+    if (!oldPassword || !newPassword) {
+      throw { message: "All fields are required", statusCode: 404 };
+    }
     const oldP = await loggedInUser.validatePassword(oldPassword);
     if (!oldP) {
       throw { message: "Old password is not correct", statusCode: 401 };
     }
-
+    if (oldPassword === newPassword) {
+      throw {
+        message: "New password must be different from old password",
+        statusCode: 400,
+      };
+    }
     validatePassword(newPassword);
 
     const newPasswordHash = await bcrypt.hash(
       newPassword,
-      process.env.PASS_HASH_SALT
+      parseInt(process.env.PASS_HASH_SALT)
     );
 
     await loggedInUser.updateOne({ password: newPasswordHash });
